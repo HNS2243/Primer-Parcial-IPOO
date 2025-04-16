@@ -59,4 +59,47 @@ class Aeropuerto {
         }   
         return $vulosAer;
     }
+
+    public function ventaAutomatica($asientos, $fecha, $destino) {
+
+        foreach ($this->getColeccionAerolineas() as $aerolinea) { // recorre las erolineas
+            $vuelos = $aerolinea->darVueloADestino($destino, $asientos); //empareja los vuelos
+            foreach ($vuelos as $vuelo) { //recorre lo que encontro
+                if ($vuelo->getFecha() >= $fecha) { //verificacion de detalles
+                    if ($vuelo->getCantAsientosDisponibles() >= $asientos) {
+                        $vuelo->asignarAsientosDisponibles($asientos);
+                        return $vuelo; //retorna directamente el vuelo
+                    }
+                }
+            }
+        }
+    }
+
+    public function promedioRecaudadoXAerolinea($idAerolinea) {
+        $totalRecaudado = 0;
+        $totalVuelos = 0;
+    
+        foreach ($this->getColeccionAerolineas() as $aerolinea) {
+            if ($aerolinea->getIdentificacion() == $idAerolinea) {
+                $vuelosAerolinea = $aerolinea->getColeccionVuelos();
+                
+                foreach ($vuelosAerolinea as $vuelo) {
+                    $totalRecaudado += $vuelo->getImporte();
+                    $totalVuelos++;
+                }
+            }
+        }
+
+        if ($totalVuelos > 0) {
+            $final = $totalRecaudado / $totalVuelos;
+            return $final;
+        } else {
+            return 0;
+        }
+    }
+    
 }
+
+
+
+
